@@ -9,7 +9,7 @@ ENV SCHEME=$SCHEME \
     CI_PROJECT_ID=$CI_PROJECT_ID \
     GITLAB_CI_FILES=$GITLAB_CI_FILES
 
-RUN apk update && \
+RUN apk update \
     && apk upgrade --no-cache \
         openssl>=3.5.6-r0 \
         musl>=1.2.5-r23 \
