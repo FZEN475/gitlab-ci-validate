@@ -10,7 +10,7 @@ ENV SCHEME=$SCHEME \
     GITLAB_CI_FILES=$GITLAB_CI_FILES
 
 RUN apk update && \
-    apk add curl=8.17.0-r1 \
+    apk add --no-cache curl=8.17.0-r1 \
     jq=1.8.1-r0
 
 COPY ci/ /ci
