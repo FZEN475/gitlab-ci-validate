@@ -1,0 +1,23 @@
+services:
+  gitlab-ci-validate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./.env
+    environment:
+      TRACE: false
+
+      CI_SERVER_HOST: ${CI_SERVER_HOST}
+      GITLAB_TOKEN: ${GITLAB_PASSWORD}
+      CI_PROJECT_ID: ${CI_PROJECT_ID}
+      CUSTOM_CA_FILE: "/run/secrets/ca.crt"
+
+    volumes:
+      - /tmp/gitlab-ci-validate:/source
+      - /tmp/gitlab-ci-validate-cache:/source/.cache
+    secrets:
+      - ca.crt
+
+secrets:
+  ca.crt:
+    file: /etc/ssl/certs/ca.crt
