@@ -10,12 +10,12 @@ ENV SCHEME=$SCHEME \
     GITLAB_CI_FILES=$GITLAB_CI_FILES
 
 RUN apk update \
-    && apk upgrade --no-cache \
-        openssl>=3.5.6-r0 \
-        musl>=1.2.5-r23 \
-        util-linux>=.41.4-r0 \
-    && apk add --no-cache curl=8.17.0-r1 \
-    jq=1.8.1-r0
+    && apk add --no-cache \
+        "openssl>=3.5.6-r0" \
+        "musl>=1.2.5-r23" \
+        "util-linux>=2.41.4-r0" \
+        "curl=8.17.0-r1" \
+        "jq=1.8.1-r0"
 
 COPY ci/ /ci
 
