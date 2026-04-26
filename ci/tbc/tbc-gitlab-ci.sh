@@ -207,6 +207,14 @@
       log_info "Validating: $file..."
       cilint_req="{\"content\": $(jq --raw-input --slurp '.'  < "${file:-/dev/stdin}")}"
       cilint_resp=$(curl -s --header "Content-Type: application/json" --header "PRIVATE-TOKEN: ${GITLAB_TOKEN:-$GITLAB_CI_LINT_TOKEN}" $CI_API_V4_URL/projects/$CI_PROJECT_ID/ci/lint --data "$cilint_req")
+
+      echo "=== RAW RESPONSE ==="
+      echo "$cilint_resp" | jq . | tee reports/gitlab-ci-validate.json
+
+      echo "=== MERGED YAML ==="
+      jq -r '.merged_yaml' reports/gitlab-ci-validate.json \
+        | yq eval -P - | tee reports/merged.yaml
+
       if [ "$(echo "$cilint_resp" | jq -r '.valid')" == "true" ]
       then
         log_info " ... valid"
@@ -214,12 +222,6 @@
         log_error " ... invalid"
         rc=1
       fi
-      echo "=== RAW RESPONSE ==="
-      echo "$cilint_resp" | jq . | tee reports/gitlab-ci-validate.json
-
-      echo "=== MERGED YAML ==="
-      jq -r '.merged_yaml' reports/gitlab-ci-validate.json \
-        | yq eval -P - | tee reports/merged.yaml
     done
     exit $rc
   }
