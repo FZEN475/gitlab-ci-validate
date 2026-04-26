@@ -215,7 +215,7 @@
         rc=1
       fi
       echo "=== RAW RESPONSE ==="
-      echo "$cilint_resp" | tee reports/gitlab-ci-validate.json
+      echo "$cilint_resp" | jq . | tee reports/gitlab-ci-validate.json
 
       echo "=== MERGED YAML ==="
       jq -r '.merged_yaml' reports/gitlab-ci-validate.json \
