@@ -14,22 +14,22 @@ include:
       cosign-strategy: always
       cosign-dist-url: "https://github.com/sigstore/cosign/releases/download/v2.5.0/cosign-linux-amd64"
 
-  - component: $CI_SERVER_FQDN/library/cicd/extands/docker-image-mirroring/docker-image-mirroring@main
+#  - component: $CI_SERVER_FQDN/library/cicd/extands/docker-image-mirroring/docker-image-mirroring@main
 
-  - component: $CI_SERVER_FQDN/library/cicd/auto-release/auto-release@main
-    inputs:
-      auto-rebase: true
-      auto-approve: true
-
-      auto-merge: true
-      auto-remove-source-branch: true
-
-      auto-tag: false
-      auto-tag-pattern: '/^\d+\.\d+\.\d+$/'
-      auto-tag-version-major: 0
-      auto-tag-version-minor: 4
-
-      auto-release: true
+#  - component: $CI_SERVER_FQDN/library/cicd/auto-release/auto-release@main
+#    inputs:
+#      auto-rebase: true
+#      auto-approve: true
+#
+#      auto-merge: true
+#      auto-remove-source-branch: true
+#
+#      auto-tag: false
+#      auto-tag-pattern: '/^\d+\.\d+\.\d+$/'
+#      auto-tag-version-major: 0
+#      auto-tag-version-minor: 4
+#
+#      auto-release: true
 
 stages:
   - build                                # docker-hadolint,
@@ -121,43 +121,43 @@ stages:
   - job: docker-buildah-mirroring
     optional: true
 
-generate_release_env_file:
-  stage: publish
-  image: registry.gitlab.com/gitlab-org/cli:latest
-  needs:
-    - job: docker-publish
-  before_script:
-    - !reference [ .install-utility ]
-  script:
-    - |
-      arg_image=$(printf '```bash\ndocker pull %s:%s\n```\n' \
-        "$CI_REGISTRY_IMAGE" "$docker_tag")
-
-      log_info "$arg_image"
-      
-      arg_latest=$(printf '```bash\ndocker pull %s:%s\n```\n---\n' \
-        "$CI_REGISTRY_IMAGE" "latest")
-      
-      log_info "$arg_latest"
-      
-      # Формируем release notes для образа docker
-      release_notes_docker=$(jq -n \
-        --arg head "Docker image" \
-        --arg image "$arg_image" \
-        --arg latest "$arg_latest" \
-        '{head: $head, image: $image, latest: $latest}' | base64 -w0
-      )
-
-      {
-        echo "release_notes_docker=$release_notes_docker"
-      } > release.env
-
-  rules:
-    - !reference [ .tagged, only ]
-    - when: on_success
-  artifacts:
-    reports:
-      dotenv: release.env
+#generate_release_env_file:
+#  stage: publish
+#  image: registry.gitlab.com/gitlab-org/cli:latest
+#  needs:
+#    - job: docker-publish
+#  before_script:
+#    - !reference [ .install-utility ]
+#  script:
+#    - |
+#      arg_image=$(printf '```bash\ndocker pull %s:%s\n```\n' \
+#        "$CI_REGISTRY_IMAGE" "$docker_tag")
+#
+#      log_info "$arg_image"
+#
+#      arg_latest=$(printf '```bash\ndocker pull %s:%s\n```\n---\n' \
+#        "$CI_REGISTRY_IMAGE" "latest")
+#
+#      log_info "$arg_latest"
+#
+#      # Формируем release notes для образа docker
+#      release_notes_docker=$(jq -n \
+#        --arg head "Docker image" \
+#        --arg image "$arg_image" \
+#        --arg latest "$arg_latest" \
+#        '{head: $head, image: $image, latest: $latest}' | base64 -w0
+#      )
+#
+#      {
+#        echo "release_notes_docker=$release_notes_docker"
+#      } > release.env
+#
+#  rules:
+#    - !reference [ .tagged, only ]
+#    - when: on_success
+#  artifacts:
+#    reports:
+#      dotenv: release.env
 
 variables:
   CI_DEBUG_TRACE: "false"

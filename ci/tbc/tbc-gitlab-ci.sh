@@ -212,9 +212,14 @@
         log_info " ... valid"
       else
         log_error " ... invalid"
-        echo "$cilint_resp" | jq
         rc=1
       fi
+      echo "=== RAW RESPONSE ==="
+      echo "$cilint_resp" | tee reports/gitlab-ci-validate.json
+
+      echo "=== MERGED YAML ==="
+      jq -r '.merged_yaml' reports/gitlab-ci-validate.json \
+        | yq eval -P - | tee reports/merged.yaml
     done
     exit $rc
   }

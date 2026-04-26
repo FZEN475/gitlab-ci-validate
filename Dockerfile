@@ -18,6 +18,7 @@ RUN apk update \
         "libuuid>=2.41.4-r0" \
         "curl>=8.17.0-r1" \
         "jq>=1.8.1-r0" \
+        "yq-go>=4.49.2-r5" \
     && rm -rf /var/cache/apk/*
 
 COPY ci/ /ci
